@@ -14,7 +14,7 @@ import javax.servlet.annotation.HandlesTypes;
 
 import org.eclipse.jetty.util.annotation.ManagedObject;
 
-@HandlesTypes(ManagedObject.class)
+@HandlesTypes(JmxInit.Key.class)
 public class JmxInit implements ServletContainerInitializer
 {
     @Documented
@@ -38,8 +38,12 @@ public class JmxInit implements ServletContainerInitializer
     public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException
     {
         String namedKeys = c.stream()
-                .filter(e -> e.getName().startsWith("demo.") && e.getAnnotation(Key.class) != null)
-                .map(e -> e.getAnnotation(Key.class).value())
+                .map(e ->
+                {
+                    if (e.getAnnotation(ManagedObject.class) == null)
+                        throw new RuntimeException("Missing required @" + ManagedObject.class.getName() + " annotation on class " + e.getName());
+                    return e.getAnnotation(Key.class).value();
+                })
                 .collect(Collectors.joining(","));
         
         ctx.setInitParameter("org.eclipse.jetty.server.context.ManagedAttributes", namedKeys);
