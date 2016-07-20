@@ -3,7 +3,6 @@ package demo;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,9 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.annotation.ManagedAttribute;
 import org.eclipse.jetty.util.annotation.ManagedObject;
 
-@WebServlet(urlPatterns = "/hello", loadOnStartup = 1)
 @ManagedObject("Hello Servlet")
-@JmxInit.Key("hello")
 public class HelloServlet extends HttpServlet
 {
     private String message = "Hello World";
@@ -21,7 +18,7 @@ public class HelloServlet extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        JmxInit.add(getServletContext(), this);
+        getServletContext().setAttribute("helloKey", this);
     }
     
     @ManagedAttribute(name = "Message")

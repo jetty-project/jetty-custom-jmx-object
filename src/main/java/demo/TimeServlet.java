@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.annotation.ManagedAttribute;
 import org.eclipse.jetty.util.annotation.ManagedObject;
 
-@WebServlet(urlPatterns = "/time", loadOnStartup = 1)
 @ManagedObject("Time Servlet")
-@JmxInit.Key("time")
 public class TimeServlet extends HttpServlet
 {
     private String format = "yyyy.MM.dd G 'at' HH:mm:ss z";
@@ -23,7 +20,7 @@ public class TimeServlet extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        JmxInit.add(getServletContext(), this);
+        getServletContext().setAttribute("timeKey", this);
     }
     
     @ManagedAttribute(value = "Format")
